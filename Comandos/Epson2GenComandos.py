@@ -78,53 +78,8 @@ class Epson2GenComandos(ComandoFiscalInterface):
         arg = None
         if args and args[0] is not None and len(args[0]):
             arg = args[0].split(",")
-        if arg is None:
-            ret = self.conector.driver.EpsonLibInterface[commando]()
-        elif len(arg) == 1:
-            ret = self.conector.driver.EpsonLibInterface[commando](arg[0])
-        elif len(arg) == 2:
-            ret = self.conector.driver.EpsonLibInterface[commando](arg[0], arg[1])
-        elif len(arg) == 3:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2]
-            )
-        elif len(arg) == 4:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3]
-            )
-        elif len(arg) == 5:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3], arg[4]
-            )
-        elif len(arg) == 6:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3], arg[4], arg[5]
-            )
-        elif len(arg) == 7:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6]
-            )
-        elif len(arg) == 8:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7]
-            )
-        elif len(arg) == 9:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7], arg[8]
-            )
-        elif len(arg) == 10:
-            ret = self.conector.driver.EpsonLibInterface[commando](
-                arg[0],
-                arg[1],
-                arg[2],
-                arg[3],
-                arg[4],
-                arg[5],
-                arg[6],
-                arg[7],
-                arg[8],
-                arg[9],
-            )
+        if arg is None or len(arg) <= 10:
+            ret = self.conector.driver.EpsonLibInterface[commando](*(arg or []))
         else:
             ret = None
         return ret
