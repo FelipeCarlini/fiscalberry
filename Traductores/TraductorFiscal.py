@@ -2,33 +2,34 @@
 from Traductores.TraductorInterface import TraductorInterface
 import math
 
+
 class TraductorFiscal(TraductorInterface):
 
     def runcommand(self, cadena):
         # ejecuta cualquier comando en la impresora
         self.comando.start()
-        val = cadena.split(",",1)
+        val = cadena.split(",", 1)
         if len(val) == 0:
             val.append(cadena)
         com = val.pop(0)
         arg = None
         if len(val) > 0:
             arg = val[0]
-        ret = self.comando.runcommand(com,arg)
+        ret = self.comando.runcommand(com, arg)
         self.comando.close()
         return ret
 
     def getcommand(self, cadena):
         # ejecuta cualquier comando en la impresora con respuesta
         self.comando.start()
-        val = cadena.split(",",1)
+        val = cadena.split(",", 1)
         if len(val) == 0:
             val.append(cadena)
         com = val.pop(0)
         arg = None
         if len(val) > 0:
             arg = val[0]
-        ret = self.comando.getcommand(com,arg)
+        ret = self.comando.getcommand(com, arg)
         self.comando.close()
         return ret
 
@@ -37,7 +38,7 @@ class TraductorFiscal(TraductorInterface):
         ret = self.comando.CargarLogo(path)
         self.comando.close()
         return ret
-    
+
     def EliminarLogo(self, *args):
         self.comando.start()
         ret = self.comando.EliminarLogo()
@@ -49,83 +50,96 @@ class TraductorFiscal(TraductorInterface):
         ret = self.comando.ConsultarVersionDll()
         self.comando.close()
         return ret
+
     def getState(self, *args):
         self.comando.start()
         ret = self.comando.getState()
         self.comando.close()
         return ret
+
     def getLastError(self, *args):
         self.comando.start()
         ret = self.comando.getLastError()
         self.comando.close()
         return ret
+
     def getFiscalStatus(self, *args):
         self.comando.start()
         ret = self.comando.getFiscalStatus()
         self.comando.close()
         return ret
+
     def getPrinterStatus(self, *args):
         self.comando.start()
         ret = self.comando.getPrinterStatus()
         self.comando.close()
         return ret
+
     def getReturnCode(self, *args):
         self.comando.start()
         ret = self.comando.getReturnCode()
         self.comando.close()
         return ret
+
     def getComPort(self, *args):
         self.comando.start()
         ret = self.comando.getComPort()
         self.comando.close()
         return ret
+
     def getBaudRate(self, *args):
         self.comando.start()
         ret = self.comando.getBaudRate()
         self.comando.close()
         return ret
+
     def getProtocolType(self, *args):
         self.comando.start()
         ret = self.comando.getProtocolType()
         self.comando.close()
-        return ret    
+        return ret
+
     def GetHTTPStatusCode(self, *args):
         self.comando.start()
         ret = self.comando.GetHTTPStatusCode()
         self.comando.close()
         return ret
+
     def SetSSLInsecureMode(self, *args):
         self.comando.start()
         ret = self.comando.SetSSLInsecureMode()
         self.comando.close()
         return ret
+
     def GetTimeOut(self, *args):
         self.comando.start()
         ret = self.comando.GetTimeOut()
         self.comando.close()
         return ret
+
     def GetResponseHeadersCount(self, *args):
         self.comando.start()
         ret = self.comando.GetResponseHeadersCount()
         self.comando.close()
         return ret
+
     def getExtraFieldCount(self, *args):
         self.comando.start()
         ret = self.comando.getExtraFieldCount()
         self.comando.close()
         return ret
+
     def ComenzarLog(self, *args):
         self.comando.start()
         ret = self.comando.ComenzarLog()
         self.comando.close()
         return ret
+
     def ConsultarEstadoDeConexion(self, *args):
         self.comando.start()
         ret = self.comando.ConsultarEstadoDeConexion()
         self.comando.close()
         return ret
-
-        
 
     def dailyClose(self, type):
         "Comando X o Z"
@@ -138,10 +152,8 @@ class TraductorFiscal(TraductorInterface):
 
     def imprimirAuditoria(self, desde, hasta):
         "Imprimir Auditoria"
-        #Solo compatible para Epson 1G y 2G por el momento...
-
-        #desde & hasta parametros que pueden ser números de zetas o fechas en formato ddmmyyyy
-
+        #  Solo compatible para Epson 1G y 2G por el momento...
+        #  desde & hasta parametros que pueden ser números de zetas o fechas en formato ddmmyyyy
         self.comando.start()
         ret = self.comando.imprimirAuditoria(desde, hasta)
         self.comando.close()
@@ -192,39 +204,37 @@ class TraductorFiscal(TraductorInterface):
     def printTicket(self, encabezado=None, items=[], pagos=[], percepciones=[], addAdditional=None, setHeader=None, setTrailer=None):
         if setHeader:
             self.setHeader(*setHeader)
-
         if setTrailer:
             self.setTrailer(*setTrailer)
 
         self.comando.start()
         try:
+            if encabezado:
+                self._abrirComprobante(**encabezado)
+            else:
+                self._abrirComprobante()
 
-          if encabezado:
-              self._abrirComprobante(**encabezado)
-          else:
-              self._abrirComprobante()
+            for item in items:
+                self._imprimirItem(**item)
 
-          for item in items:
-              self._imprimirItem(**item)
-
-          if percepciones:
+            if percepciones:
                 for percepcion in percepciones:
                     self._imprimirPercepcion(**percepcion)
 
-          if pagos:
+            if pagos:
                 for pago in pagos:
                     self._imprimirPago(**pago)
 
-          if addAdditional:
-              self.comando.addAdditional(**addAdditional)
+            if addAdditional:
+                self.comando.addAdditional(**addAdditional)
 
-          rta = self._cerrarComprobante()
-          self.comando.close()
-          return rta
+            rta = self._cerrarComprobante()
+            self.comando.close()
+            return rta
 
-        except Exception, e:
-          self.cancelDocument()
-          raise
+        except Exception as e:
+            self.cancelDocument()
+            raise
 
     def _abrirComprobante(self,
                           tipo_cbte="T",  # tique
@@ -238,13 +248,17 @@ class TraductorFiscal(TraductorInterface):
                           ):
         "Creo un objeto factura (internamente) e imprime el encabezado"
         # crear la estructura interna
-        self.factura = {"encabezado": dict(tipo_cbte=tipo_cbte,
-                                           tipo_responsable=tipo_responsable,
-                                           tipo_doc=tipo_doc, nro_doc=nro_doc,
-                                           nombre_cliente=nombre_cliente,
-                                           domicilio_cliente=domicilio_cliente,
-                                           referencia=referencia),
-                                           "items": [], "pagos": [], "percepciones": []}
+        self.factura = {
+            "encabezado": dict(
+                tipo_cbte=tipo_cbte,
+                tipo_responsable=tipo_responsable,
+                tipo_doc=tipo_doc, nro_doc=nro_doc,
+                nombre_cliente=nombre_cliente,
+                domicilio_cliente=domicilio_cliente,
+                referencia=referencia
+            ),
+            "items": [], "pagos": [], "percepciones": []
+        }
         printer = self.comando
 
         letra_cbte = tipo_cbte[-1] if len(tipo_cbte) > 1 else None
