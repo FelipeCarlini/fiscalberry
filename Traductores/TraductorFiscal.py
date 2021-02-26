@@ -201,6 +201,12 @@ class TraductorFiscal(TraductorInterface):
         self.comando.cancelAnyDocument()
         self.comando.close()
 
+    def loadOtherTributes(self, *args):
+        "Cargar otros tributos"
+        self.comando.start()
+        self.comando.loadOtherTributes(list(args))
+        self.comando.close()
+
     def printTicket(self, encabezado=None, items=[], pagos=[], percepciones=[], addAdditional=None, setHeader=None, setTrailer=None):
         if setHeader:
             self.setHeader(*setHeader)
